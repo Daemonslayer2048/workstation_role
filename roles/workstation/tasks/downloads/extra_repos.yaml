@@ -1,0 +1,12 @@
+- name: Add repository
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "/etc/yum.repos.d/{{ item.pkg }}.repo"
+    mode: '06440'
+  loop: "{{ extra_repos }}"
+
+- name: Install Package
+  ansible.builtin.package:
+    name: "{{ item.pkg }}"
+    state: present
+  loop: "{{ extra_repos }}"

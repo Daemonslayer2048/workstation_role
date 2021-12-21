@@ -1,0 +1,17 @@
+# Some packages do not auto tag a latest release, this will find it for us
+- name: Find latest release
+  community.general.github_release:
+    user: "{{ item.owner }}"
+    repo: "{{ item.repo }}"
+    action: latest_release
+  register: latest_release
+
+- name: Print latest release
+  ansible.builtin.debug:
+    msg: "The latest release for {{ item.repo }} is: {{ latest_release['tag'] }}"
+
+- name: Download appimage
+  ansible.builtin.get_url:
+    url: "https://github.com/{{ item.owner }}/{{ item.repo }}/releases/download/{{ latest_release['tag'] }}/{{ item.source_name }}.AppImage"
+    dest: "/home/{{ lookup('env', 'USER') }}/.local/bin/{{ item.repo }}"
+    mode: 0755

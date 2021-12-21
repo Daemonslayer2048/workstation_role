@@ -1,0 +1,12 @@
+- name: Download rpm package
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "/tmp/{{ item.pkg }}.rpm"
+  loop: "{{ rpms }}"
+
+- name: Install package
+  ansible.builtin.yum:
+    name: "/tmp/{{ item.pkg }}.rpm"
+    state: present
+    disable_gpg_check: true
+  loop: "{{ rpms }}"

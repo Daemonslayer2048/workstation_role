@@ -1,0 +1,142 @@
+# THis may be needed also kernel-devel-$(uname -r)
+pkgs:
+  # Libraries
+  - python3-github3py
+  - yum-utils
+  - git
+  - dnf-plugins-core
+  - distribution-gpg-keys
+  # Programs
+  - akmod-VirtualBox
+  - jq
+  - ansible
+  - zsh
+  - snapd
+  - htop
+  - podman
+  - gparted
+  - awscli
+  - hub
+  - mumble
+  - steam
+  - ckb-next
+  - python3-pip
+  - tmux
+  - latex*
+
+git_binaries:
+  - repo: terragrunt
+    owner: gruntwork-io
+    tag: latest
+    source_name: terragrunt_linux_amd64
+    destination: /usr/local/bin/terragrunt
+  - repo: yq
+    owner: mikefarah
+    tag: latest
+    source_name: yq_linux_amd64
+    destination: /usr/local/bin/yq
+  - repo: sops
+    owner: mozilla
+    tag: latest
+    source_name: sops-v3.7.1.linux
+    destination: /usr/local/bin/sops
+
+appimages:
+  - repo: desktop
+    owner: nextcloud
+    tag: latest
+    source_name: Nextcloud-3.4.1-x86_64
+  - repo: joplin
+    owner: laurent22
+    tag: latest
+    source_name: Joplin-2.6.10
+
+extra_repos:
+  - pkg: terraform
+    url: https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+    description: The hashicorp terraform repo
+  - pkg: VirtualBox
+    url: https://download.virtualbox.org/virtualbox/rpm/fedora/virtualbox.repo
+    description: Virtualbox Hypervisor
+
+copr:
+  - repo: taw/element
+    pkg: element
+  - repo: dsommers/openvpn3
+    pkg: openvpn3-client
+
+snaps:
+  - teams
+  - spotify
+  - discord
+  - bitwarden
+
+rpms:
+  - url: https://launchpad.net/veracrypt/trunk/1.25.4/+download/veracrypt-1.25.4-CentOS-8-x86_64.rpm
+    pkg: veracrypt
+  - url: https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm
+    pkg: dbeaver
+  - url: https://atom.io/download/rpm
+    pkg: atom
+  - url: https://protonvpn.com/download/protonvpn-stable-release-1.0.1-1.noarch.rpm
+    pkg: protonvpn
+
+cron_jobs:
+  - name: "Remove files from downloads older than 1 week"
+    minute: "0"
+    hour: "9"
+    job: find ~/Downloads/* -mtime +7 -exec rm {} \;
+  - name: Backup VirtualBox VMs
+    minute: "30"
+    hour: "17"
+    job: "~/Projects/vbox_backups/vbox_backups.sh"
+
+atom_pkgs:
+  - atom-jinja2
+  - language-terraform
+  - minimap
+  - seti-icons
+  - nv-dark-ui
+  - dracula-night-syntax
+  - markdown-preview-enhanced
+
+cruft:
+  - kmail
+  - kolourpaint
+  - kruler
+  - kcolorchooser
+  - konversation
+  - krdc
+  - krfb
+
+git_projects:
+  - source: "https://github.com/Daemonslayer2048/common_role.git"
+    destination: "Projects/ansible_roles/"
+  - source: "https://github.com/Daemonslayer2048/nextcloud_role.git"
+    destination: "Projects/ansible_roles/"
+  - source: "https://github.com/Daemonslayer2048/caddy_role.git"
+    destination: "Projects/ansible_roles/"
+  - source: "https://github.com/Daemonslayer2048/bitwarden_role.git"
+    destination: "Projects/ansible_roles/"
+  - source: "https://github.com/Daemonslayer2048/matrix_role.git"
+    destination: "Projects/ansible_roles/"
+  - source: "https://github.com/Daemonslayer2048/homeassistant_role.git"
+    destination: "Projects/ansible_roles/"
+  - source: "https://github.com/Daemonslayer2048/mumble_role.git"
+    destination: "Projects/ansible_roles/"
+  - source: "https://github.com/Daemonslayer2048/powerdns_role.git"
+    destination: "Projects/ansible_roles/"
+  - source: "https://github.com/Daemonslayer2048/workstation_role.git"
+    destination: "Projects/ansible_roles/"
+  - source: "https://github.com/Daemonslayer2048/nexus_role.git"
+    destination: "Projects/ansible_roles/"
+  - source: "https://github.com/Daemonslayer2048/infrastructure.git"
+    destination: "Projects/infrastructure/"
+  - source: "https://github.com/Daemonslayer2048/infrastructure_modules.git"
+    destination: "Projects/infrastructure/"
+  - source: "https://github.com/Daemonslayer2048/infrastructure_plays.git"
+    destination: "Projects/infrastructure/"
+  - source: "https://github.com/Daemonslayer2048/vbox_backups.git"
+    destination: "Projects/"
+  - source: "https://github.com/Daemonslayer2048/proxmox_cloud-init_builder.git"
+    destination: "Projects/"
