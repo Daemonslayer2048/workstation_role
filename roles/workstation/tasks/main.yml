@@ -1,0 +1,82 @@
+# Donwloads Section
+- name: Enable rpm fusion repos
+  ansible.builtin.dnf:
+    name: "https://mirrors.rpmfusion.org/{{ item }}/fedora/rpmfusion-{{ item }}-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+    state: present
+    disable_gpg_check: true
+  with_items:
+    - free
+    - nonfree
+
+- name: Update system
+  ansible.builtin.yum:
+    name: '*'
+    state: latest
+    update_cache: yes
+    update_only: yes
+
+- name: Install base packages
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ pkgs }}"
+
+- name: Download binaries from Git
+  include: ./downloads/git_binaries.yaml
+  loop: "{{ git_binaries }}"
+
+- name: Download packages from extra repos
+  include: ./downloads/extra_repos.yaml
+
+- name: Add copr packages
+  include: ./downloads/copr.yaml
+
+- name: Install rpms
+  include: ./downloads/rpms.yaml
+
+- name: Download Snap Packs
+  community.general.snap:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ snaps }}"
+
+- name: Install atom packages
+  include: ./setup_atom.yaml
+
+- name: Remove unwanted packages
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ cruft }}"
+
+- name: Download projects
+  include: ./downloads/projects.yaml
+
+- name: Download appimages
+  include: ./downloads/appimages.yaml
+  loop: "{{ appimages }}"
+
+- name: Remove packages not needed anymore
+  ansible.builtin.yum:
+    autoremove: yes
+
+# Setup System
+- name: Setup ZSH
+  include: ./oh-my-zsh.yaml
+
+- name: Setup cron jobs
+  ansible.builtin.cron:
+    user: "{{ lookup('env', 'USER') }}"
+    name: "{{ item.name }}"
+    minute: "{{ item.minute }}"
+    hour: "{{ item.hour }}"
+    job: "{{ item.job }}"
+  loop: "{{ cron_jobs }}"
+
+- name: Allow user to run sudo without pass
+  ansible.builtin.lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: visudo -cf %s

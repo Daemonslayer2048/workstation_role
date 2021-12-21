@@ -1,0 +1,6 @@
+- name: Install atom packages
+  become: true
+  become_user: "{{ lookup('env', 'USER') }}"
+  ansible.builtin.command:
+    cmd: "apm install {{ item }}"
+  loop: "{{ atom_pkgs }}"

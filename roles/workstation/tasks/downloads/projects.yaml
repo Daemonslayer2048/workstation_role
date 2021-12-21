@@ -1,0 +1,16 @@
+- name: Create project folder
+  ansible.builtin.file:
+    path: "/home/{{ lookup('env', 'USER') }}/{{ item.destination }}"
+    state: directory
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+  loop: "{{ git_projects }}"
+
+- name: Download git repo
+  become: true
+  become_user: "{{ lookup('env', 'USER') }}"
+  ansible.builtin.git:
+    repo: "{{ item.source }}"
+    dest: "/home/{{ lookup('env', 'USER') }}/{{ item.destination }}"
+  ignore_errors: yes
+  loop: "{{ git_projects }}"
