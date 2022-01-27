@@ -1,4 +1,4 @@
-# Donwloads Section
+# Downloads Section
 - name: Enable rpm fusion repos
   ansible.builtin.dnf:
     name: "https://mirrors.rpmfusion.org/{{ item }}/fedora/rpmfusion-{{ item }}-release-{{ ansible_distribution_major_version }}.noarch.rpm"
